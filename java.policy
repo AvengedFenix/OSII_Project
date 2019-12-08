@@ -1,0 +1,7 @@
+/* AUTOMATICALLY GENERATED ON Sun Dec 08 00:18:37 CST 2019*/
+/* DO NOT EDIT */
+
+grant {
+  permission java.net.SocketPermission "192.169.0.20", "connect, resolve";
+};
+
