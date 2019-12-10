@@ -9,17 +9,22 @@ and open the template in the editor.
 */
 
 .root{
-    -fx-background-color: linear-gradient(#383838, #838383);
+    -fx-background-color: #ffffff;
     -fx-font-size: 11pt;
+    -fx-display: block;
+    -fx-font-family: 'Gotham Light';
 }
 
 .label{
-    -fx-text-fill: #e8e8e8;
+    -fx-text-fill: #000000;
+    /*-fx-margin-right: 10px;*/
+
 }
 
 .button{
-    -fx-background-color: linear-gradient(#dc9556, #ab4642);
+    -fx-background-color: #d40052;
     -fx-background-radius: 100;
+    -fx-text-fill: #ffffff;
     -fx-postion: relative;
     -fx-width: 50%;
     -fx-height: 50%;
