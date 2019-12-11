@@ -31,8 +31,8 @@ public class ChatServer {
                 String msg = s.nextLine().trim();
                 if (server.getClient() != null) {
 
-                    Vector<ChatInterface> client = server.getClient();
-                    Iterator<ChatInterface> ic = client.iterator();
+                    Vector<FileSystemInterface> client = server.getClient();
+                    Iterator<FileSystemInterface> ic = client.iterator();
                     while (ic.hasNext()) {
                         ic.next().send("[" + server.getName() + "] " + msg);
                     }

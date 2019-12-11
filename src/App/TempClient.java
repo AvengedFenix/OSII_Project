@@ -26,12 +26,16 @@ import javafx.stage.*;
 import javafx.geometry.*;
 
 //import org.riversum.promise.Promise;
-public class Client extends Application {
+public class TempClient extends Application {
 
     final static File folder = new File("RemoteFolder");
     static ArrayList files = new ArrayList();
 
     static boolean connected;
+
+    public TempClient() {
+
+    }
 
     public static void main(String[] args) throws RemoteException, NotBoundException {
 
@@ -70,9 +74,9 @@ public class Client extends Application {
 
                     }
                 } catch (RemoteException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TempClient.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (NotBoundException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(TempClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
@@ -119,7 +123,7 @@ public class Client extends Application {
                         try {
                             pb.start();
                         } catch (IOException ex) {
-                            //Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                            //Logger.getLogger(TempClient.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 });
@@ -186,10 +190,10 @@ public class Client extends Application {
         }
     }
 
-    public static boolean connectToServer() throws RemoteException, NotBoundException {
-        ChatInterface client = new Chat("Culo");
+    public boolean connectToServer() throws RemoteException, NotBoundException {
+        //FileSystemInterface client = new Middleware("Temporal name", this);
         Registry registry = LocateRegistry.getRegistry(8888);
-        ChatInterface server = (ChatInterface) registry.lookup("ejempl");
+        FileSystemInterface server = (FileSystemInterface) registry.lookup("ejemplo");
 
         if (true) {
             System.out.println("Connection succesful");

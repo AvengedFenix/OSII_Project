@@ -15,11 +15,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class Chat extends UnicastRemoteObject implements ChatInterface {
+public class Chat extends UnicastRemoteObject implements FileSystemInterface {
 
     public String name;
-    public Vector<ChatInterface> client = new Vector();
-    public HashMap<String, ChatInterface> clientes = new HashMap();
+    public Vector<FileSystemInterface> client = new Vector();
+    public HashMap<String, FileSystemInterface> clientes = new HashMap();
 
     public Chat(String n) throws RemoteException {
         this.name = n;
@@ -29,22 +29,22 @@ public class Chat extends UnicastRemoteObject implements ChatInterface {
         return this.name;
     }
 
-    public void setClient(ChatInterface c) throws RemoteException {
+    public void setClient(FileSystemInterface c) throws RemoteException {
         client.add(c);
     }
 
-    public void setClient(String userName, ChatInterface c) throws RemoteException {
+    public void setClient(String userName, FileSystemInterface c) throws RemoteException {
         this.setClient(c);
         clientes.put(userName, c);
     }
 
-    public Vector<ChatInterface> getClient() {
+    public Vector<FileSystemInterface> getClient() {
         return client;
     }
 
     public void send(String s) throws RemoteException {
         System.out.println(s);
-        Iterator<ChatInterface> it = this.client.iterator();
+        Iterator<FileSystemInterface> it = this.client.iterator();
         while (it.hasNext()) {
             it.next().send(s);
         }
