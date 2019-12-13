@@ -8,6 +8,8 @@ package UserInterface;
 import App.FileSystemInterface;
 import App.Middleware;
 import App.MyFiles;
+import java.awt.Component;
+import java.awt.event.MouseAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,10 +18,17 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -28,6 +37,7 @@ import javax.swing.tree.TreeSelectionModel;
  * @author Maslz
  */
 public class Client extends javax.swing.JFrame {
+    
 
     /**
      * Creates new form UI
@@ -44,12 +54,14 @@ public class Client extends javax.swing.JFrame {
 
     public Client() throws RemoteException, NotBoundException {
         initComponents();
-        name = JOptionPane.showInputDialog(this, "Ingese un nombre para identificar al cliente", "INICIANDO CLIENTE", JOptionPane.INFORMATION_MESSAGE);
+        name = JOptionPane.showInputDialog(this, "Ingrese un nombre para identificar al cliente", "INICIANDO CLIENTE", JOptionPane.INFORMATION_MESSAGE);
         client = new Middleware(name, this);
         registry = LocateRegistry.getRegistry(8888);
         server = (FileSystemInterface) registry.lookup("FileSystem");
-
+        //server.addClient(client);
+        
         server.addClient(client);
+        loadFile();
 
     }
 
@@ -67,6 +79,7 @@ public class Client extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jt_remoteDirectory = new javax.swing.JTree();
+        jb_createFolder = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
 
@@ -81,11 +94,26 @@ public class Client extends javax.swing.JFrame {
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
         jLabel1.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Directory");
 
-        jt_remoteDirectory.setBackground(new java.awt.Color(255, 255, 255));
+        jt_remoteDirectory.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jt_remoteDirectoryMouseClicked(evt);
+            }
+        });
+        jt_remoteDirectory.addTreeSelectionListener(new javax.swing.event.TreeSelectionListener() {
+            public void valueChanged(javax.swing.event.TreeSelectionEvent evt) {
+                jt_remoteDirectoryValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(jt_remoteDirectory);
+
+        jb_createFolder.setText("jButton1");
+        jb_createFolder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jb_createFolderActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -94,22 +122,28 @@ public class Client extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(103, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(103, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jb_createFolder)
+                        .addGap(20, 20, 20))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(47, 47, 47)
-                .addComponent(jLabel1)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jb_createFolder))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(281, Short.MAX_VALUE))
+                .addContainerGap(280, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(0, 0, 0));
-        jPanel3.setForeground(new java.awt.Color(0, 0, 0));
 
         jLabel2.setBackground(new java.awt.Color(0, 0, 0));
         jLabel2.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
@@ -164,9 +198,51 @@ public class Client extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jt_remoteDirectoryValueChanged(javax.swing.event.TreeSelectionEvent evt) {//GEN-FIRST:event_jt_remoteDirectoryValueChanged
+//        String fileName = (String) files.get(i);
+        //final ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "./" + folder + "/" + fileName);
+        jt_remoteDirectory.addMouseListener(new MouseAdapter() {
+        public void mouseClicked(MouseEvent e) {
+            if (e.getClickCount() == 2) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                       jt_remoteDirectory.getLastSelectedPathComponent();
+                if (node == null) return;
+                Object nodeInfo = node.getUserObject();
+                System.out.println(nodeInfo.toString());
+                // Cast nodeInfo to your object and do whatever you want
+            }
+        }
+    });
+
+    }//GEN-LAST:event_jt_remoteDirectoryValueChanged
+
+    private void jt_remoteDirectoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_remoteDirectoryMouseClicked
+        if (evt.getClickCount() == 2) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                       jt_remoteDirectory.getLastSelectedPathComponent();
+                if (node == null) return;
+                Object nodeInfo = node.getUserObject();
+                System.out.println(nodeInfo.toString());
+                final ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "./" + folder + "/" + nodeInfo.toString());
+                
+            try {
+                pb.start();
+                // Cast nodeInfo to your object and do whatever you want
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }
+    }//GEN-LAST:event_jt_remoteDirectoryMouseClicked
+
+    private void jb_createFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_createFolderActionPerformed
+        createFolder();
+    }//GEN-LAST:event_jb_createFolderActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    final static File folder = new File("RemoteFolder");
+    static ArrayList files = new ArrayList();
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -319,6 +395,69 @@ public class Client extends javax.swing.JFrame {
 
     }
 
+    public void createFolder() {
+        String folderName = (String) JOptionPane.showInputDialog(this, "Ingrese nombre");
+        String path = folder.getPath();
+        System.out.println("Enter the name of the desired a directory: ");
+        path = path + "/" + folderName;
+        //Creating a File object
+        File file = new File(path);
+        //Creating the directory
+        boolean bool = file.mkdir();
+        if (bool) {
+            reload();
+            FileTreeCellRenderer x = new FileTreeCellRenderer();
+            //x.getTreeCellRendererComponent(jt_remoteDirectory, file, bool, true, bool, ERROR, bool);
+            System.out.println("Directory created successfully");
+            
+            
+        } else {
+            System.out.println("Sorry couldn’t create specified directory");
+        }
+    }
+    
+    class FileTreeCellRenderer extends DefaultTreeCellRenderer {
+  
+    @Override
+    public Component getTreeCellRendererComponent(JTree tree,
+            Object value, boolean sel, boolean expanded, boolean leaf,
+            int row, boolean hasFocus)
+    {
+        JLabel renderer = (JLabel)super.getTreeCellRendererComponent(
+                tree, value, sel, expanded, leaf, row, hasFocus);
+        File currentFile = (File)value;
+        if (currentFile.isDirectory())
+        {
+            if (expanded)
+            {
+                renderer.setIcon(openIcon);
+            }
+            else
+            {
+                renderer.setIcon(closedIcon);
+            }
+        }
+        else
+        {
+            renderer.setIcon(leafIcon);
+        }
+        return renderer;
+    }
+}
+    
+    public void reload() {
+        try {
+            DefaultTreeModel modelo = server.loadDirectory();
+            jt_remoteDirectory.setModel(modelo);
+            jt_remoteDirectory.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            jt_remoteDirectory.setSelectionRow(0);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+    }
+    
     public boolean connectToServer() throws RemoteException, NotBoundException {
         FileSystemInterface client = new Middleware("Temporal name", this);
         Registry registry = LocateRegistry.getRegistry(8888);
@@ -339,6 +478,7 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton jb_createFolder;
     private javax.swing.JTree jt_remoteDirectory;
     // End of variables declaration//GEN-END:variables
 }

@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.rmi.*;
 import java.rmi.server.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
@@ -41,9 +42,9 @@ public class Chat extends UnicastRemoteObject implements FileSystemInterface {
         clientes.put(userName, c);
     }
 
-    public Vector<FileSystemInterface> getClient() {
+    /*public Vector<FileSystemInterface> getClient() {
         return client;
-    }
+    }*/
 
     public void send(String s) throws RemoteException {
         System.out.println(s);
@@ -89,6 +90,11 @@ public class Chat extends UnicastRemoteObject implements FileSystemInterface {
 
     @Override
     public void dismountClient(String clientName) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<FileSystemInterface> getClient() throws RemoteException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
