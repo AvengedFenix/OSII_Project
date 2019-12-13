@@ -107,7 +107,7 @@ public class Middleware implements FileSystemInterface {
     public void loadTree(String path, DefaultMutableTreeNode node) {
         File root = new File(path);
         File[] list = root.listFiles();
-        Files remainingFile;
+        MyFiles remainingFile;
 
         for (File file : list) {
             String filename = file.getName();

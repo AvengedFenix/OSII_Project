@@ -9,11 +9,14 @@ package App;
  *
  * @author xioma
  */
+import java.io.File;
+import java.io.IOException;
 import java.rmi.*;
 import java.rmi.server.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+import javax.swing.tree.DefaultTreeModel;
 
 public class Chat extends UnicastRemoteObject implements FileSystemInterface {
 
@@ -52,5 +55,40 @@ public class Chat extends UnicastRemoteObject implements FileSystemInterface {
 
     public void send(String s, String userName) throws RemoteException {
         this.clientes.get(userName).send(s);
+    }
+
+    @Override
+    public DefaultTreeModel loadDirectory() throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void createFile(String fileName) throws RemoteException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void createFolder(String fileName) throws RemoteException, IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void editFile(File filePath) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void eraseFile(File filePath) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addClient(FileSystemInterface client) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dismountClient(String clientName) throws RemoteException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

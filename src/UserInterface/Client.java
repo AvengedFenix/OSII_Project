@@ -7,12 +7,21 @@ package UserInterface;
 
 import App.FileSystemInterface;
 import App.Middleware;
+import App.MyFiles;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  *
@@ -23,11 +32,24 @@ public class Client extends javax.swing.JFrame {
     /**
      * Creates new form UI
      */
+    //Global variables
+    String ip = "localhost";
+    int port = 8000;
+    String name;
+    public Registry registry;
+    public FileSystemInterface server;
+    public FileSystemInterface client;
     boolean connected = false;
 
     public Client() throws RemoteException, NotBoundException {
         initComponents();
-        //connected = connectToServer();
+        name = JOptionPane.showInputDialog(this, "Ingese un nombre para identificar al cliente", "INICIANDO CLIENTE", JOptionPane.INFORMATION_MESSAGE);
+        client = new Middleware(name, this);
+        registry = LocateRegistry.getRegistry(ip, port);
+        server = (FileSystemInterface) registry.lookup("FileSystem");
+
+        server.addClient(client);
+
     }
 
     /**
@@ -169,6 +191,107 @@ public class Client extends javax.swing.JFrame {
                 }
             }
         });
+    }
+
+    public void loadFile() {
+        try {
+            DefaultTreeModel model = server.loadDirectory();
+            jt_remoteDirectory.setModel(model);
+
+            resetCache();
+
+            roam((DefaultMutableTreeNode) jt_remoteDirectory.getModel());
+        } catch (Exception e) {
+        }
+    }
+
+    public void roam(DefaultMutableTreeNode nodo) throws IOException {
+        // Recorrer todos los archivos en el arbol e imprimir su info
+        MyFiles file = (MyFiles) nodo.getUserObject();
+
+        boolean isFile = file.isFile;
+        boolean isDir = file.isDir;
+
+        File local = new File(dirLocal(file.getFile()));
+
+        if (isFile) {
+            local.getParentFile().mkdirs();
+            local.createNewFile();
+            writeFile(local.getAbsolutePath(), file.getText());
+        }
+
+        if (isDir) {
+            local.mkdirs();
+        }
+
+        if (nodo.isLeaf()) {
+            return;
+        }
+
+        for (int i = 0; i < nodo.getChildCount(); i += 1) {
+            roam((DefaultMutableTreeNode) nodo.getChildAt(i));
+        }
+    }
+
+    public String dirLocalServer(File dirServer) {
+        // Obtener el dir local, dado el del server
+        String[] spl = dirServer.getAbsolutePath().split("RootServer");
+        if (spl.length == 1) {
+            return "RootServer";
+        }
+
+        return "RootServer" + spl[1];
+    }
+
+    public String dirLocal(File dirServer) {
+        // Obtener el dir local, dado el del server
+        String[] spl = dirServer.getAbsolutePath().split("RootServer");
+        if (spl.length == 1) {
+            return "RootClient" + name;
+        }
+
+        return "RootClient" + name + spl[1];
+    }
+
+    public void writeFile(String filename, String text) {
+        try {
+            Files.write(Paths.get(filename), text.getBytes());
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public void resetCache() {
+        File rootClient = new File("RootClient" + name);
+
+        // Borrar el directorio de cache del cliente
+        deleteDirectories(rootClient);
+
+        // Volver a crear el directorio
+        rootClient.mkdirs();
+    }
+
+    public void deleteDirectories(File root) {
+        File[] allContents = root.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                deleteDirectories(file);
+            }
+        }
+        root.delete();
+    }
+
+    public void regenerar() {
+        try {
+            DefaultTreeModel modelo = server.loadDirectory();
+            jt_remoteDirectory.setModel(modelo);
+            jt_remoteDirectory.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+            jt_remoteDirectory.setSelectionRow(0);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
     }
 
     public boolean connectToServer() throws RemoteException, NotBoundException {
