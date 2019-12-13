@@ -39,6 +39,7 @@ public class Client extends javax.swing.JFrame {
     public Registry registry;
     public FileSystemInterface server;
     public FileSystemInterface client;
+    public String open;
     boolean connected = false;
 
     public Client() throws RemoteException, NotBoundException {
@@ -203,6 +204,18 @@ public class Client extends javax.swing.JFrame {
                 }
             }
         });
+    }
+
+    public void conflict() {
+        // se detecto un conflicto
+        // notificarlo
+        JOptionPane.showMessageDialog(this, "Se detecto un conflicto con el archivo que tiene abierto:\n" + open);
+        // cerrar el archivo
+        open = "";
+        //ta_archivo.setVisible(false);
+        //btn_guardar.setVisible(false);
+        // volver a cargar la estructura
+        loadFile();
     }
 
     public void loadFile() {

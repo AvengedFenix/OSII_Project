@@ -17,13 +17,15 @@ import java.util.*;
 
 public class ChatServer {
 
+    static Middleware server;
+
     public static void main(String[] argv) {
         try {
             Scanner s = new Scanner(System.in);
             System.out.println("Nombre: ");
             String name = s.nextLine().trim();
 
-            Chat server = new Chat(name);
+            server = new Middleware();
             Registry registry = LocateRegistry.createRegistry(8888);
             registry.bind("FileSystem", server);
 
@@ -31,7 +33,7 @@ public class ChatServer {
                 String msg = s.nextLine().trim();
                 if (server.getClient() != null) {
 
-                    Vector<FileSystemInterface> client = server.getClient();
+                    ArrayList<FileSystemInterface> client = server.getClient();
                     Iterator<FileSystemInterface> ic = client.iterator();
                     while (ic.hasNext()) {
                         ic.next().send("[" + server.getName() + "] " + msg);

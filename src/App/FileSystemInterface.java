@@ -10,9 +10,11 @@ package App;
  * @author xioma
  */
 import static App.TempClient.files;
+import UserInterface.Client;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.*;
+import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -24,7 +26,7 @@ public interface FileSystemInterface extends Remote {
 
     public void send(String msg) throws RemoteException;
 
-    public Vector<FileSystemInterface> getClient() throws RemoteException;
+    public ArrayList<FileSystemInterface> getClient() throws RemoteException;
 
     DefaultTreeModel loadDirectory() throws RemoteException;
 

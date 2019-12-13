@@ -13,13 +13,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Vector;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-public class Middleware implements FileSystemInterface {
+public class Middleware extends UnicastRemoteObject implements FileSystemInterface {
 
     //Variables
     File folder = new File("RemoteFolder");
@@ -27,58 +28,62 @@ public class Middleware implements FileSystemInterface {
     String name;
     Client clientGUI;
 
-    public Middleware(String name, Client clientGUI) {
+    public Middleware() throws RemoteException {
+        this.name = "SERVER";
+    }
+
+    public Middleware(String name, Client clientGUI) throws RemoteException {
         this.name = name;
         this.clientGUI = clientGUI;
     }
 
     @Override
     public String getName() throws RemoteException {
-
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return name;
     }
 
     @Override
-    public void send(String msg) throws RemoteException {
-
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void send(String changedFile) throws RemoteException {
+        System.out.println("Broadcast del servidor: " + changedFile);
+        // ver si el archivo que el cliente tiene abierto es el que se envio
+        if (changedFile.equals(clientGUI.open)) {
+            // si es asi, decirle que hay un conflicto
+            clientGUI.conflict();
+        } else {
+            // volver a cargar la estructura
+            clientGUI.loadFile();
+        }
     }
 
     @Override
-    public Vector<FileSystemInterface> getClient() throws RemoteException {
-
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ArrayList<FileSystemInterface> getClient() throws RemoteException {
+        return clients;
     }
 
     @Override
     public void createFile(String fileName) throws RemoteException, IOException {
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void createFolder(String fileName) throws RemoteException, IOException {
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void editFile(File filePath) throws RemoteException {
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void eraseFile(File filePath) throws RemoteException {
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void addClient(FileSystemInterface client) throws RemoteException {
         System.out.println("Getting client: " + client.getName());
         clients.add(client);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -94,7 +99,6 @@ public class Middleware implements FileSystemInterface {
         } catch (Exception ex) {
             System.out.println(ex);
         }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
