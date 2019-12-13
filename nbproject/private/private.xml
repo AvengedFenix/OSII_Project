@@ -4,9 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Maslz/Desktop/OSII_Project/src/App/Middleware.java</file>
+            <file>file:/C:/Users/Maslz/Desktop/OSII_Project/src/App/Chat.java</file>
             <file>file:/C:/Users/Maslz/Desktop/OSII_Project/src/App/FileSystemInterface.java</file>
             <file>file:/C:/Users/Maslz/Desktop/OSII_Project/src/UserInterface/Client.java</file>
             <file>file:/C:/Users/Maslz/Desktop/OSII_Project/src/App/MyFiles.java</file>
+            <file>file:/C:/Users/Maslz/Desktop/OSII_Project/src/App/ChatServer.java</file>
             <file>file:/C:/Users/Maslz/Desktop/OSII_Project/src/App/TempClient.java</file>
         </group>
     </open-files>

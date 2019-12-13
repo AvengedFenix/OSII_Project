@@ -25,7 +25,7 @@ public class ChatServer {
 
             Chat server = new Chat(name);
             Registry registry = LocateRegistry.createRegistry(8888);
-            registry.bind("ejemplo", server);
+            registry.bind("FileSystem", server);
 
             while (true) {
                 String msg = s.nextLine().trim();
