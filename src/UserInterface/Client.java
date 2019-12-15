@@ -330,8 +330,13 @@ public class Client extends javax.swing.JFrame {
             //Deleting a File object
             File file = new File(path);
             file.delete();
+
+            reload();
+            FileTreeCellRenderer x = new FileTreeCellRenderer();
+
         } catch (Exception e) {
         }
+
     }//GEN-LAST:event_jb_deleteFileActionPerformed
 
     private void jb_montarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_montarActionPerformed
