@@ -11,6 +11,7 @@ import App.MyFiles;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -265,16 +266,27 @@ public class Client extends javax.swing.JFrame {
 
     private void jt_remoteDirectoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jt_remoteDirectoryMouseClicked
         if (evt.getClickCount() == 2) {
+            ProcessBuilder pb = new ProcessBuilder();
+
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt_remoteDirectory.getLastSelectedPathComponent();
             if (node == null) {
                 return;
             }
             Object nodeInfo = node.getUserObject();
             System.out.println(nodeInfo.toString());
-            final ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "./" + folder + "/" + nodeInfo.toString());
+
+            if (nodeInfo.toString().contains(".")) {
+                pb = new ProcessBuilder("Notepad.exe", "./" + folder + "/" + nodeInfo.toString());
+            } else {
+                System.out.println("Es directorio");
+            }
 
             try {
-                pb.start();
+                if (nodeInfo.toString().contains(".")) {
+                    pb.start();
+                } else {
+
+                }
                 // Cast nodeInfo to your object and do whatever you want
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -283,12 +295,72 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jt_remoteDirectoryMouseClicked
 
     private void jb_createFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_createFolderActionPerformed
-        createFolder("");
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt_remoteDirectory.getLastSelectedPathComponent();
+        if (node == null) //Nothing is selected.  
+        {
+            return;
+        }
+
+        Object nodeInfo = node.getUserObject();
+
+        MyFiles file = (MyFiles) nodeInfo;
+        System.out.println(file.getFile().getPath());
+
+        String folderName = (String) JOptionPane.showInputDialog(this, "Ingrese nombre");
+        //String path = folder.getPath();
+        System.out.println("Enter the name of the desired a directory: ");
+
+        String path = file.getFile().getPath() + "\\" + folderName;
+        System.out.println("path: " + path);
+
+        //Creating a File object
+        File file2 = new File(path);
+        //Creating the directory
+        boolean bool = file2.mkdir();
+        if (bool) {
+            reload();
+            FileTreeCellRenderer x = new FileTreeCellRenderer();
+            //x.getTreeCellRendererComponent(jt_remoteDirectory, file, bool, true, bool, ERROR, bool);
+            System.out.println("Directory created successfully");
+
+        } else {
+            System.out.println("Sorry couldn’t create specified directory");
+        }
     }//GEN-LAST:event_jb_createFolderActionPerformed
 
     private void jb_createFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_createFileActionPerformed
-        // TODO add your handling code here:
-        createFolder(".txt");
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) jt_remoteDirectory.getLastSelectedPathComponent();
+        if (node == null) //Nothing is selected.  
+        {
+            return;
+        }
+
+        Object nodeInfo = node.getUserObject();
+
+        MyFiles file2 = (MyFiles) nodeInfo;
+        System.out.println(file2.getFile().getPath());
+
+        String fileName = (String) JOptionPane.showInputDialog(this, "Ingrese nombre de archivo");
+        //String path = folder.getPath();
+        System.out.println("Enter the name of the desired a directory: ");
+        String path2 = file2.getFile().getPath() + "\\" + fileName;
+        System.out.println("path: " + path2);
+        //Creating a File object
+        //File file2 = new File(path);
+
+        try {
+            String fileData = "";
+            FileOutputStream fos = new FileOutputStream(".\\" + path2 + ".txt");
+            fos.write(fileData.getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        reload();
+        //FileTreeCellRenderer x = new FileTreeCellRenderer();
+        //x.getTreeCellRendererComponent(jt_remoteDirectory, file, bool, true, bool, ERROR, bool);
+        System.out.println("File created successfully");
     }//GEN-LAST:event_jb_createFileActionPerformed
 
     private void jb_dismountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jb_dismountActionPerformed
